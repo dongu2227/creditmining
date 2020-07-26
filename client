@@ -18,4 +18,4 @@ docker-compose -f ./Client/creditcoin-client.yaml up -d
 
 # 3. Run client shell
 docker exec -it creditcoin-client bash
-./ccclient sighash
+./ccclient sighash/
