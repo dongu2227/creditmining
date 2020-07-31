@@ -85,11 +85,11 @@ docker-compose -f Client/creditcoin-client.yaml pull
 # 8. Download block snapshot
 ## Install gdown to download large file from Google Drive
 ## Install python3 & pip3 
-sudo apt install -y python3 python3-pip
+####sudo apt install -y python3 python3-pip
 ## Install gdown
-pip3 install gdown
+####pip3 install gdown
 ## download compressed block snapshot file
-gdown https://drive.google.com/uc?id=13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3
+####gdown https://drive.google.com/uc?id=13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3
 
 # 9. Use snapshot
 ## Make folder "server_validator-block-volume"
