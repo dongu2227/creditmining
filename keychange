@@ -24,7 +24,7 @@ echo "new-signer: $NEWSIGNER"
 echo "new-public: $NEWPUBLIC"
 
 # 5. replace SIGNER
-sed -i "s|$OLDSIGNER|$SIGNER|g" ./Client/clientConfig.json
+sed -i "s|$OLDSIGNER|$NEWSIGNER|g" ./Client/clientConfig.json
 
 # 6. Run client
 docker-compose -f ./Client/creditcoin-client.yaml up -d
