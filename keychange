@@ -1,0 +1,33 @@
+#!/bin/sh
+cd ~/CreditcoinDocs-Mainnet/
+
+
+# 1. Get signer 
+OLDSIGNER=$(docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.priv)
+
+# 2. Client stop
+docker-compose -f ./Client/creditcoin-client.yaml down
+
+# 3. Change Key
+cd ~/
+docker exec sawtooth-validator-default sh -c "echo '08b0efa1e8133fd831cda1bc9f28cf48baac60e93887a8d5d77e91dd5773bf92' > /etc/sawtooth/keys/validator.priv"
+docker exec sawtooth-validator-default sh -c "echo '0296fc87089bb66c433b824c2b3d40ade8d6d83897dd90a8c54ca5d187626552a5' > /etc/sawtooth/keys/validator.pub"
+
+# 4. Get new signer & pub
+## Creditcoin Miner must be on running status
+## If you successfully terninated step1, It will fine.
+cd ~/CreditcoinDocs-Mainnet/
+NEWSIGNER=$(docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.priv)
+NEWPUBLIC=$(docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.pub)
+
+echo "new-signer: $NEWSIGNER"
+echo "new-public: $NEWPUBLIC"
+
+# 5. replace SIGNER
+sed -i "s|$OLDSIGNER|$SIGNER|g" ./Client/clientConfig.json
+
+# 6. Run client
+docker-compose -f ./Client/creditcoin-client.yaml up -d
+
+# 7. Run client shell
+docker exec -it creditcoin-client bash
