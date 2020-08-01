@@ -7,9 +7,9 @@ OLDSIGNER=$(docker exec sawtooth-validator-default cat /etc/sawtooth/keys/valida
 
 # 2. Server stop & restart
 
-docker-compose -f ./Client/creditcoin-client.yaml down
-docker-compose -f ./Server/creditcoin-with-gateway.yaml down
-docker-compose -f ./Server/creditcoin-with-gateway.yaml up
+#docker-compose -f ./Client/creditcoin-client.yaml down
+#docker-compose -f ./Server/creditcoin-with-gateway.yaml down
+#docker-compose -f ./Server/creditcoin-with-gateway.yaml up
 
 # 3. Change Key
 cd ~/
