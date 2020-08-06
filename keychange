@@ -10,8 +10,8 @@ docker-compose -f ./Client/creditcoin-client.yaml down
 
 # 3. Change Key
 cd ~/
-docker exec sawtooth-validator-default sh -c "echo '35164e70c605b9b6fc14d76aa1133be5801af3c16822c93a8d3d7c62963787a5' > /etc/sawtooth/keys/validator.priv"
-docker exec sawtooth-validator-default sh -c "echo '035d6297d864866a6c9db2bc2d177c8215424ecd27032f2bdbb2296f66c017ed91' > /etc/sawtooth/keys/validator.pub"
+docker exec sawtooth-validator-default sh -c "echo '' > /etc/sawtooth/keys/validator.priv"
+docker exec sawtooth-validator-default sh -c "echo '' > /etc/sawtooth/keys/validator.pub"
 
 # 4. Get new signer & pub
 ## Creditcoin Miner must be on running status
