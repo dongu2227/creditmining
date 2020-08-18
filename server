@@ -14,8 +14,8 @@ IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 # FILE_ID="1LYvErTJIhaOpmwc853_uSEios-K-VXGn"
 # FILE_ID="1Zpck7XVc2cznkTpR6yBbDmDQqUk4T1Xw"
 # FILE_ID="1zow_3Ro7BGgOHdPDBk37Gip25traJb1q"
-FILE_ID="13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3"
-# FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
+# FILE_ID="13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3"
+FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
 
 
 # 1. Git&tmux insatll
