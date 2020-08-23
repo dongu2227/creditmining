@@ -20,11 +20,6 @@ FILE_ID="1LYvErTJIhaOpmwc853_uSEios-K-VXGn"
 
 # 1. Git&tmux insatll
 sudo apt-get -y install git tmux
-sudo apt-get -y install tmux
-sudo apt-get -y install curl
-sudo apt-get -y install landscape-common
-sudo dpkg --configure -a
-sudo apt-get -y install -f
 
 # 2. Docker install
 ## Docker uninstall(Pass this part if you start on new instance)
