@@ -11,12 +11,12 @@ IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 # File Name: creditcoin-block-volume.tar.gz
 # Latest Block: 513,815
 # SHA-256 Hash: 9BF2542F72F913AACDEE82CD6B2FFC3AD09E78D4662DDCAD865816CA425F0AE1
-FILE_ID="1LYvErTJIhaOpmwc853_uSEios-K-VXGn"
+# FILE_ID="1LYvErTJIhaOpmwc853_uSEios-K-VXGn"
 # FILE_ID="1Zpck7XVc2cznkTpR6yBbDmDQqUk4T1Xw"
 # FILE_ID="1zow_3Ro7BGgOHdPDBk37Gip25traJb1q"
 # FILE_ID="13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3"
 # FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
-# FILE_ID="13aLWVn4Q3zqKcgIfkT3IerWmuPcgMkxJ"
+FILE_ID="13aLWVn4Q3zqKcgIfkT3IerWmuPcgMkxJ"
 
 
 # 1. Git&tmux insatll
