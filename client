@@ -4,14 +4,14 @@ cd ~/CreditcoinDocs-Mainnet/
 # 1. Get signer
 ## Creditcoin Miner must be on running status
 ## If you successfully terninated step1, It will fine.
-SIGNER=$(docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.priv)
-PUBLIC=$(docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.pub)
+SIGNER=$(sudo docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.priv)
+PUBLIC=$(sudo docker exec sawtooth-validator-default cat /etc/sawtooth/keys/validator.pub)
 
 echo "signer: $SIGNER"
 echo "public: $PUBLIC"
 
 ## replace SIGNER
-sudo sed -i "s|<256_bit_key_secp256k1_ECDSA>|$SIGNER|g" ./Client/clientConfig.json
+sed -i "s|<256_bit_key_secp256k1_ECDSA>|$SIGNER|g" ./Client/clientConfig.json
 
 # 2. Run client
 sudo docker-compose -f ./Client/creditcoin-client.yaml up -d
