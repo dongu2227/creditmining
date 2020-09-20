@@ -11,7 +11,7 @@ echo "signer: $SIGNER"
 echo "public: $PUBLIC"
 
 ## replace SIGNER
-sed -i "s|<256_bit_key_secp256k1_ECDSA>|$SIGNER|g" ./Client/clientConfig.json
+sudo sed -i "s|<256_bit_key_secp256k1_ECDSA>|$SIGNER|g" ./Client/clientConfig.json
 
 # 2. Run client
 sudo docker-compose -f ./Client/creditcoin-client.yaml up -d
