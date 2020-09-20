@@ -14,8 +14,8 @@ echo "public: $PUBLIC"
 sed -i "s|<256_bit_key_secp256k1_ECDSA>|$SIGNER|g" ./Client/clientConfig.json
 
 # 2. Run client
-docker-compose -f ./Client/creditcoin-client.yaml up -d
+sudo docker-compose -f ./Client/creditcoin-client.yaml up -d
 
 # 3. Run client shell
-docker exec -it creditcoin-client bash
+sudo docker exec -it creditcoin-client bash
 ./ccclient sighash/
