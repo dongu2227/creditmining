@@ -5,8 +5,8 @@
 INFURA="https://mainnet.infura.io/v3/c28855b735f2440d894ffa91af9f2fdf"
 ####################
 
-# IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
-IP="172.104.68.225"
+IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+# IP="172.104.68.225"
 
 # Block snapshot on google drive
 # Timestamp: July 10, 2020 9:46 PM UTC
