@@ -1,0 +1,2 @@
+IP=$(curl ifconfig.me)
+sed -i "s|172.104.119.62|$IP|g" ./Server/creditcoin-with-gateway.yaml
