@@ -5,8 +5,8 @@
 INFURA="https://mainnet.infura.io/v3/c28855b735f2440d894ffa91af9f2fdf"
 ####################
 
-IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
-# IP="172.104.65.133"
+# IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+IP="172.104.119.62"
 
 # Block snapshot on google drive
 # Timestamp: July 10, 2020 9:46 PM UTC
@@ -20,7 +20,8 @@ IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 # FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
 # FILE_ID="1tuEN6dpoHNTiTwTJhnamPxJ5feDVpMiw"
 # FILE_ID="1hTl3LjbH41JN-gQiG9vBj0urQr2kKaLw"
-FILE_ID="19JZhxZ2qLE9RrKhm7xkdso9lod_AeKtW"
+# FILE_ID="19JZhxZ2qLE9RrKhm7xkdso9lod_AeKtW"
+FILE_ID="1YKmxLMja5G7oBx28pzscbzj7FaM89_Fj"
 
 
 # 1. Git&tmux insatll
