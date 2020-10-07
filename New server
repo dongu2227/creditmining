@@ -1,0 +1,115 @@
+#!/bin/sh
+
+### Type your INFURA URL ###
+INFURA="https://mainnet.infura.io/v3/c8bde3801ffb4c95b8671b847b1a3fdc"
+# INFURA="https://mainnet.infura.io/v3/c28855b735f2440d894ffa91af9f2fdf"
+####################
+
+# IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+# IP="172.104.119.62"
+IP=$(curl ifconfig.me)
+
+# Block snapshot on google drive
+# Timestamp: July 10, 2020 9:46 PM UTC
+# File Name: creditcoin-block-volume.tar.gz
+# Latest Block: 513,815
+# SHA-256 Hash: 9BF2542F72F913AACDEE82CD6B2FFC3AD09E78D4662DDCAD865816CA425F0AE1
+# FILE_ID="1LYvErTJIhaOpmwc853_uSEios-K-VXGn"
+# FILE_ID="1Zpck7XVc2cznkTpR6yBbDmDQqUk4T1Xw"
+# FILE_ID="1zow_3Ro7BGgOHdPDBk37Gip25traJb1q"
+# FILE_ID="13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3"
+# FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
+# FILE_ID="1tuEN6dpoHNTiTwTJhnamPxJ5feDVpMiw"
+# FILE_ID="1hTl3LjbH41JN-gQiG9vBj0urQr2kKaLw"
+# FILE_ID="19JZhxZ2qLE9RrKhm7xkdso9lod_AeKtW"
+FILE_ID="1YKmxLMja5G7oBx28pzscbzj7FaM89_Fj"
+
+
+# 1. Git&tmux insatll
+sudo apt-get -y install git tmux
+
+# 2. Docker install
+## Docker uninstall(Pass this part if you start on new instance)
+sudo apt-get -y remove docker docker-engine docker.io containerd runc
+
+## SET UP THE REPOSITORY
+## Update the apt package index and install packages to allow apt to use a repository over HTTPS:
+sudo apt-get update
+sudo apt-get -y install \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg-agent \
+  software-properties-common
+
+## Add Docker’s official GPG key:
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+
+## set up the stable repository
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+## Install docker engine
+sudo apt-get update
+sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+
+# 3. Docker compose install
+## Run this command to download the current stable release of Docker Compose:
+sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+## Apply executable permissions to the binary:
+sudo chmod +x /usr/local/bin/docker-compose
+
+## You can also create a symbolic link to /usr/bin or any other directory in your path.
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+# 4. Clone creditcoin mainnet repository
+git clone https://github.com/gluwa/CreditcoinDockerCompose-Mainnet.git
+## cd
+cd CreditcoinDockerCompose-Mainnet/
+## checkout to revive "-vv"
+git checkout 694b010550
+
+# 5. Replace public IP & ethereum_node_url
+sed -i "s|<ethereum_node_url>|$INFURA|g" ./Server/gatewayConfig.json
+sed -i "s|\[insert.your.ip\]|$IP|g" ./Server/docker-compose.yaml
+
+# 6. change sawtooth version 1.0 to 1.2
+sed -i "s|sawtooth-settings-tp:1.0|sawtooth-settings-tp:1.2|g" ./Server/docker-compose.yaml
+sed -i "s|sawtooth-rest-api:1.0|sawtooth-rest-api:1.2|g" ./Server/docker-compose.yaml
+
+# 7. docker image pull
+docker-compose -f Server/docker-compose.yaml pull
+docker-compose -f Client/docker-compose.yaml pull
+
+# 8. Download block snapshot
+## Install gdown to download large file from Google Drive
+## Install python3 & pip3 
+sudo apt install -y python3 python3-pip
+## Install gdown
+pip3 install gdown
+## download compressed block snapshot file
+gdown https://drive.google.com/uc?id=$FILE_ID
+
+# 9. Use snapshot
+## Make folder "server_validator-block-volume"
+mkdir /var/lib/docker/volumes/server_validator-block-volume/
+## Uncompressed
+tar xzvf creditcoin-block-volume.tar.gz -C /var/lib/docker/volumes/server_validator-block-volume/
+## Remove downloaded compressed file
+rm -rf creditcoin-block-volume.tar.gz
+
+# 10. Open firewall
+# 4004 8008 8800 55555
+yes | sudo ufw enable
+sudo ufw allow 22/tcp    # for SSH
+sudo ufw allow 4004/tcp
+sudo ufw allow 8008/tcp
+sudo ufw allow 8800/tcp
+sudo ufw allow 55555/tcp
+
+# 11. Run Server
+docker-compose -f ./Server/docker-compose.yaml up
