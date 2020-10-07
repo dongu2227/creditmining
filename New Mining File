@@ -1,0 +1,29 @@
+#!/bin/sh
+
+### Type your INFURA URL ###
+INFURA="https://mainnet.infura.io/v3/c28855b735f2440d894ffa91af9f2fdf"
+####################
+
+# My IP Check
+IP=$(curl ifconfig.me)
+
+# Github clone Creditcoin File
+git clone https://github.com/gluwa/CreditcoinDockerCompose-Mainnet.git
+
+## cd
+cd CreditcoinDockerCompose-Mainnet/
+
+# Replace public IP & ethereum_node_url
+sed -i "s|<ethereum_node_url>|$INFURA|g" ./Server/gatewayConfig.json
+sed -i "s|\[insert.your.ip\]|$IP|g" ./Server/docker-compose.yaml
+
+# change sawtooth version 1.0 to 1.2
+sed -i "s|sawtooth-settings-tp:1.0|sawtooth-settings-tp:1.2|g" ./Server/docker-compose.yaml
+sed -i "s|sawtooth-rest-api:1.0|sawtooth-rest-api:1.2|g" ./Server/docker-compose.yaml
+
+# docker image pull
+docker-compose -f Server/docker-compose.yaml pull
+docker-compose -f Client/docker-compose.yaml pull
+
+# Run Server
+docker-compose -f ./Server/docker-compose.yaml up
