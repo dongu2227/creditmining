@@ -1,0 +1,170 @@
+import paramiko
+import pandas as pd
+from slack import WebClient
+from slack.errors import SlackApiError
+import datetime
+import re
+import time
+import os
+import requests 
+import json
+  
+    
+def get_storage_used(ssh_client):
+    stdin, stdout, stderr = ssh_client.exec_command("landscape-sysinfo | grep 'Usage of /'") 
+    conIdList = stdout.readlines()
+    storage_used_str = re.findall(r'([0-9].*?)%',  conIdList[0])
+    storage_used = float(storage_used_str[0])
+    return storage_used
+
+        
+def shell_command(ssh_client, cmd):
+    stdin, stdout, stderr = ssh_client.exec_command(cmd)
+    
+    # exec_command하고 stdout을 받아주지 않으면 실행이 잘 되지 않는거같아 추가함
+    stdout_output = stdout.readlines()
+    stderr_output = stderr.readlines()        
+    print(stdout_output)
+    print(stderr_output)
+    
+    return stdout_output
+
+
+def slack_message(slack_client, _channel, _text):
+    try:
+        response = slack_client.chat_postMessage(
+            channel=_channel,
+            text=_text,
+            link_names=1
+            )
+    except SlackApiError as e:
+        # You will get a SlackApiError if "ok" is False
+        print(f"Got an error: {e.response['error']}")    
+
+        
+def get_latest_block():
+    # 최신 블록 넘버 가져오기
+    lastet_block = 0
+    api_lastest_block = 0
+    r = requests.get(url=API_ENDPOINT)
+
+    if r.status_code != 200:
+        slack_message(slack_client, SLACK_CHANNEL, f"API 조회 에러 {r.status_code}")
+        with open('./data.json') as f:
+            json_data = json.load(f)
+            latest_block = json_data['latest_block']
+    else:
+        data = r.json()
+        block_id = list(data['data'].keys())[0]
+        api_latest_block = int(data['data'][block_id]['blockNum'])
+        with open('./data.json') as f:
+            json_data = json.load(f)
+            pre_latest_block = json_data['latest_block']
+        if api_latest_block > pre_latest_block:
+            latest_block = api_latest_block
+            latest_block_dict = {'latest_block': latest_block}
+            with open("data.json", "w") as outfile:
+                json.dump(latest_block_dict, outfile)
+        else:
+            latest_block = pre_latest_block
+    
+    return api_latest_block, latest_block
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+API_ENDPOINT = "https://api.creditcoinexplorer.com/api/blocks?limit=1"
+PORT=22
+USERNAME='root'
+SLACK_API_TOKEN = "봇토큰 주소"
+SLACK_CHANNEL="채널이름"
+MINER_TSV_FILE="./credit-miner-instance.tsv"
+
+
+slack_client = WebClient(token=SLACK_API_TOKEN)
+
+ssh_client = paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+df = pd.read_csv(MINER_TSV_FILE, sep='\t')
+# 기존 블록넘버 삭제하고 새 블록넘버 기록
+df['old_block'] = df['new_block']
+
+
+print(df)
+
+slack_message(slack_client, SLACK_CHANNEL, "START: " + str(datetime.datetime.now()))
+api_latest_block, latest_block = get_latest_block()
+slack_message(slack_client, SLACK_CHANNEL, f"최신블록 {latest_block}")
+
+for index, row in df.iterrows():
+    NO = row["NO"]
+    IP = row["IP"]
+    PASSWORD = row["PASSWORD"]
+    old_block = row["old_block"]
+    new_block = row["new_block"]
+
+    ssh_client.connect(IP, PORT, USERNAME, PASSWORD)
+
+    # 도커 로그 삭제
+    shell_command(ssh_client, "truncate -s 0 /var/lib/docker/containers/*/*-json.log")
+    
+    # 용량 체크
+    if get_storage_used(ssh_client) >= 90:
+        # 슬랙으로 알림
+        slack_message(slack_client, SLACK_CHANNEL, f"@channel {NO:<4} {IP:<16}용량%: " + str(get_storage_used(ssh_client)))
+        shell_command(ssh_client, "sh ~/creditcoin-miner-script/restart.sh")
+        continue
+
+    # 상태 체크를 해봅시다.
+    docker_container_list = shell_command(ssh_client, "docker ps -q")        
+    
+    
+    # 컨테이너 6개가 정상적으로 돌고 있는지?
+    if len(docker_container_list) != 6:
+        slack_message(slack_client, SLACK_CHANNEL, f"@channel {NO:<4} {IP:<16}컨테이너 6개 아님. RESTART")
+        shell_command(ssh_client, "sh ~/creditcoin-miner-script/restart.sh")
+    else:
+        tip_output = shell_command(ssh_client, "docker exec creditcoin-client ./ccclient tip")
+        # ./ccclient tip에서 블록넘버만 가져오기. 만약 에러발생한다면 예외처리
+        try:
+            block_num = int(tip_output[0].replace('\n', ''))
+        except Exception as e:
+            slack_message(slack_client, SLACK_CHANNEL, f"@channel {NO:<4} {IP:<16}컨테이너6개 돌고 있지만 블록 조회 문제 발생. RESTART")
+            shell_command(ssh_client, "sh ~/creditcoin-miner-script/restart.sh")
+        else:
+            df.loc[df['NO'] == NO, 'new_block'] = block_num
+            
+            api_latest_block, latest_block = get_latest_block()
+            slack_message(slack_client, SLACK_CHANNEL, f"{NO:<4} {IP:<16} OLD: {old_block:<8} NEW: {block_num:<8} LATEST: {latest_block:<8}")
+
+            # 블록 탈락 후 힐링되는 경우에는 old_block이 더 클 수도 있으니 (old_block == block_num) 조건에 > 는 포함하지 않는다.
+            
+            # 최신블록보다 15블록 초과해서 뒤쳐지면서 xx분동안 블록높이가 그대로라면 리스타트. 최신블록과 동일하거나 앞서있다면 리스타트 불필요
+            # if (old_block == block_num) & ((latest_block - block_num) > 15):
+
+            # 최신블록보다 뒤쳐지면서 블록높이가 그대로라면 리스타트. 최신블록과 동일하거나 앞서있다면 리스타트 불필요
+            if (old_block == block_num) & ((latest_block) > block_num):
+                slack_message(slack_client, SLACK_CHANNEL, f"@channel {NO:<4} {IP:<16}블록상승 없음 {block_num:<8} LATEST: {latest_block:<8} RESTART")                
+                shell_command(ssh_client, "sh ~/creditcoin-miner-script/restart.sh")
+            # 블록높이가 최신블록보다 뒤쳐져있을 경우 리스타트
+            # if ((latest_block) > block_num):
+                # slack_message(slack_client, SLACK_CHANNEL, f"@channel {NO:<4} {IP:<16}블록높이 미달 {block_num:<8} LATEST: {latest_block:<8} RESTART")                
+                # shell_command(ssh_client, "sh ~/creditcoin-miner-script/restart.sh")
+            elif (block_num > (latest_block)):
+                block_num_dict = {'latest_block': block_num}
+                with open("data.json", "w") as outfile:  
+                    json.dump(block_num_dict, outfile)
+
+    ssh_client.close()
+
+
+df['old_block'] = df['old_block'].astype('int64')
+df['new_block'] = df['new_block'].astype('int64')
+
+df.to_csv(MINER_TSV_FILE, sep='\t', index=False)
+
+#latest_block_dict = {'latest_block': latest_block}
+#with open("data.json", "w") as outfile:  
+    #json.dump(latest_block_dict, outfile)
+
+slack_message(slack_client, SLACK_CHANNEL, "END: " + str(datetime.datetime.now()))
