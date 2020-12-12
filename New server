@@ -71,7 +71,7 @@ git clone https://github.com/gluwa/CreditcoinDockerCompose-Mainnet.git
 ## cd
 cd CreditcoinDockerCompose-Mainnet/
 ## checkout to revive "-vv"
-git checkout 694b010550
+#git checkout 694b010550
 
 # 5. Replace public IP & ethereum_node_url
 sed -i "s|<ethereum_node_url>|$INFURA|g" ./Server/gatewayConfig.json
