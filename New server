@@ -16,7 +16,7 @@ IP=$(curl ifconfig.me)
 # SHA-256 Hash: 9BF2542F72F913AACDEE82CD6B2FFC3AD09E78D4662DDCAD865816CA425F0AE1
 # FILE_ID="1NSGyRiRJ-UViefatuhHs6eG-EC9NQZy5"
 #FILE_ID="18KE-CurR9ZPyh-nBVAfq7znO1vfgBaat"
-FILE_ID="1C1q5Je0zB2qouJSGiAEuieP_9v3UrSfC"
+FILE_ID="1SxtXJUGGnUr_34Rxam5Fbopovv0xnVHP"
 # FILE_ID="13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3"
 # FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
 # FILE_ID="1tuEN6dpoHNTiTwTJhnamPxJ5feDVpMiw"
@@ -92,7 +92,7 @@ sudo apt install -y python3 python3-pip
 ## Install gdown
 pip3 install gdown
 ## download compressed block snapshot file
-#gdown https://drive.google.com/uc?id=$FILE_ID
+gdown https://drive.google.com/uc?id=$FILE_ID
 
 # 9. Use snapshot
 ## Make folder "server_validator-block-volume"
