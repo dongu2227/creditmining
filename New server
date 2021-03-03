@@ -100,7 +100,7 @@ mkdir /var/lib/docker/volumes/server_validator-block-volume/
 ## Uncompressed
 tar xzvf creditcoin-block-volume.tar.gz -C /var/lib/docker/volumes/server_validator-block-volume/
 ## Remove downloaded compressed file
-rm -rf creditcoin-block-volume.tar.gz
+#rm -rf creditcoin-block-volume.tar.gz
 
 # 10. Open firewall
 # 4004 8008 8800 55555
