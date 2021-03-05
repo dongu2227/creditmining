@@ -15,14 +15,14 @@ IP=$(curl ifconfig.me)
 # Latest Block: 513,815
 # SHA-256 Hash: 9BF2542F72F913AACDEE82CD6B2FFC3AD09E78D4662DDCAD865816CA425F0AE1
 # FILE_ID="1NSGyRiRJ-UViefatuhHs6eG-EC9NQZy5"
-#FILE_ID="18KE-CurR9ZPyh-nBVAfq7znO1vfgBaat"
-FILE_ID="1SxtXJUGGnUr_34Rxam5Fbopovv0xnVHP"
+# FILE_ID="18KE-CurR9ZPyh-nBVAfq7znO1vfgBaat"
+# FILE_ID="1SxtXJUGGnUr_34Rxam5Fbopovv0xnVHP"
 # FILE_ID="13pXzPfytjy-cah4M7QbzTyzhhfMWFhg3"
 # FILE_ID="16nK6172AnY8c6yOl97rdZvr89VHARjJW"
 # FILE_ID="1tuEN6dpoHNTiTwTJhnamPxJ5feDVpMiw"
 # FILE_ID="1hTl3LjbH41JN-gQiG9vBj0urQr2kKaLw"
 # FILE_ID="19JZhxZ2qLE9RrKhm7xkdso9lod_AeKtW"
-# FILE_ID="1YKmxLMja5G7oBx28pzscbzj7FaM89_Fj"
+FILE_ID="1-SILalmB63mWpP75L_oiduXkirIB-Vtq"
 
 
 # 1. Git&tmux insatll
@@ -100,7 +100,7 @@ mkdir /var/lib/docker/volumes/server_validator-block-volume/
 ## Uncompressed
 tar xzvf creditcoin-block-volume.tar.gz -C /var/lib/docker/volumes/server_validator-block-volume/
 ## Remove downloaded compressed file
-#rm -rf creditcoin-block-volume.tar.gz
+rm -rf creditcoin-block-volume.tar.gz
 
 # 10. Open firewall
 # 4004 8008 8800 55555
