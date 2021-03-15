@@ -1,3 +1,3 @@
 IP=$(curl ifconfig.me)
 cd ~/CreditcoinDockerCompose-Mainnet/
-sed -i "s|172.105.241.115|$IP|g" ./Server/docker-compose.yaml
+sed -i "s|172.105.199.173|$IP|g" ./Server/docker-compose.yaml
