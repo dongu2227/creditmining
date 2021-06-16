@@ -1,0 +1,20 @@
+IP=$(curl ifconfig.me)
+
+sudo docker-compose -f ~/CreditcoinDockerCompose-Mainnet/Server/docker-compose.yaml down
+sudo docker-compose -f ~/CreditcoinDockerCompose-Mainnet/Client/docker-compose.yaml down
+
+rm -rf /root/CreditcoinDockerCompose-Mainnet/Server/docker-compose.yaml
+rm -rf /root/CreditcoinDockerCompose-Mainnet/Client/docker-compose.yaml
+
+cd ~/CreditcoinDockerCompose-Mainnet/Server
+wget https://github.com/gluwa/CreditcoinDockerCompose-Mainnet/blob/dev/Server/docker-compose.yaml?raw=true
+mv docker-compose.yaml?raw=true docker-compose.yaml
+sed -i "s|\[insert.your.ip\]|$IP|g" ./docker-compose.yaml
+sed -i "s|sawtooth-settings-tp:1.0|sawtooth-settings-tp:1.2|g" ./docker-compose.yaml
+sed -i "s|sawtooth-rest-api:1.0|sawtooth-rest-api:1.2|g" ./docker-compose.yaml
+
+cd ~/CreditcoinDockerCompose-Mainnet/Client
+
+wget https://github.com/gluwa/CreditcoinDockerCompose-Mainnet/blob/dev/Client/docker-compose.yaml?raw=true
+
+mv docker-compose.yaml?raw=true docker-compose.yaml
