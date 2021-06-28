@@ -2,5 +2,5 @@ cd CreditcoinDockerCompose-Mainnet/
 
 
 # 6. change sawtooth version 1.2 to 1.7
-sed -i "s|sawtooth-settings-tp:1.0|sawtooth-settings-tp:1.7|g" ./Server/docker-compose.yaml
-sed -i "s|sawtooth-rest-api:1.0|sawtooth-rest-api:1.7|g" ./Server/docker-compose.yaml
+sed -i "s|sawtooth-settings-tp:1.2|sawtooth-settings-tp:1.7|g" ./Server/docker-compose.yaml
+sed -i "s|sawtooth-rest-api:1.2|sawtooth-rest-api:1.7|g" ./Server/docker-compose.yaml
