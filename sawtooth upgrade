@@ -1,4 +1,4 @@
-cd CreditcoinDockerCompose-Mainnet/
+cd ~/CreditcoinDockerCompose-Mainnet
 
 
 # 6. change sawtooth version 1.2 to 1.7
