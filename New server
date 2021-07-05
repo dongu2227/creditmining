@@ -1,8 +1,8 @@
 #!/bin/sh
 
 ### Type your INFURA URL ###
-INFURA="https://mainnet.infura.io/v3/c8bde3801ffb4c95b8671b847b1a3fdc"
-# INFURA="https://mainnet.infura.io/v3/c28855b735f2440d894ffa91af9f2fdf"
+# INFURA="https://mainnet.infura.io/v3/c8bde3801ffb4c95b8671b847b1a3fdc"
+INFURA="https://mainnet.infura.io/v3/c28855b735f2440d894ffa91af9f2fdf"
 ####################
 
 # IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
