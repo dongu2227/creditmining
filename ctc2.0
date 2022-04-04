@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IP=$(curl ifconfig.me)
-ID=dongu1
+ID=dongu
 SS58=5EsdJFZtvsFxQVCviNQxBNYHsxkLbygxsqAdj3gbZLK9hy7B
 
 # 1. Git&tmux insatll
